@@ -20,9 +20,13 @@ namespace Laba3_ListBox
     /// </summary>
     public partial class MainWindow : Window
     {
+        MyValues myValues;
         public MainWindow()
         {
             InitializeComponent();
+            myValues = new MyValues();
+            myGrid.DataContext = myValues;
+
         }
     }
 }
