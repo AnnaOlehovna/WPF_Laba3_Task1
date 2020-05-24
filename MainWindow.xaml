@@ -43,27 +43,58 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
         <TextBox Text="X start" Grid.Column="0" Grid.Row="0" Margin="16" TextAlignment="Right" FontSize="16" IsReadOnly="True" BorderBrush="Transparent"/>
-        <TextBox Text="{Binding Path=XStart, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}" Validation.ErrorTemplate="{StaticResource ErrorTempl}" 
-                 Name="tbXStart" Grid.Column="1" Grid.Row="0" Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"/>
-
+        <TextBox Name="tbXStart" Grid.Column="1" Grid.Row="0" Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"
+            Text="{Binding Path=XStart, UpdateSourceTrigger=LostFocus}" Validation.ErrorTemplate="{StaticResource ErrorTempl}"                  
+                 LostFocus="tbXStart_LostFocus" KeyDown="tbXStart_KeyDown"/>
+        
 
         <TextBox Text="X stop" Grid.Column="0" Grid.Row="1" Margin="16" TextAlignment="Right" FontSize="16"  IsReadOnly="True" BorderBrush="Transparent"/>
-        <TextBox Text="{Binding Path=XStop, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}" Validation.ErrorTemplate="{StaticResource ErrorTempl}"  Name="tbXStop" Grid.Column="1" Grid.Row="1" 
-                 Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"/>
+        <TextBox Name="tbXStop"  Grid.Column="1" Grid.Row="1" Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"
+             Validation.ErrorTemplate="{StaticResource ErrorTempl}" LostFocus="tbXStop_LostFocus" KeyDown="tbXStop_KeyDown">
+            <TextBox.Resources>
+                <local:BindingProxy x:Key="TargetProxy" Data="{Binding Path=XStart}"/>
+            </TextBox.Resources>
+            <TextBox.Text>
+                <Binding Path="XStop" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding.ValidationRules>
+                        <local:XStopRule>
+                            <local:Wrapper start="{Binding Data, Source={StaticResource TargetProxy}}"/>
+                        </local:XStopRule>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBox Text="Step" Grid.Column="0" Grid.Row="2" Margin="16" TextAlignment="Right" FontSize="16"  IsReadOnly="True" BorderBrush="Transparent"/>
-        <TextBox Text="{Binding Path=Step, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}" Validation.ErrorTemplate="{StaticResource ErrorTempl}"  Name="tbStep" Grid.Column="1" Grid.Row="2" 
-                 Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"/>
+        <TextBox Validation.ErrorTemplate="{StaticResource ErrorTempl}"  Name="tbStep" Grid.Column="1" Grid.Row="2" 
+                 Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left">
+            <TextBox.Text>
+                <Binding Path="Step" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding.ValidationRules>
+                        <local:StepRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
 
         <TextBox Text="N" Grid.Column="0" Grid.Row="3" Margin="16" TextAlignment="Right" FontSize="16"  IsReadOnly="True" BorderBrush="Transparent"/>
-        <TextBox Text="{Binding Path=N, ValidatesOnExceptions=True, UpdateSourceTrigger=LostFocus}" Validation.ErrorTemplate="{StaticResource ErrorTempl}"  Name="tbN" Grid.Column="1" Grid.Row="3" 
-                 Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"/>
+        <TextBox Name="tbN" Grid.Column="1" Grid.Row="3" Margin="0,16,0,16" FontSize="16" BorderBrush="Black" Padding="4,0,0,0" Width="60" HorizontalAlignment="Left"
+             Validation.ErrorTemplate="{StaticResource ErrorTempl}" >
+            <TextBox.Text>
+                <Binding Path="N" UpdateSourceTrigger="PropertyChanged" >
+                    <Binding.ValidationRules>
+                        <local:NRule/>
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
-        <Button Name="btnCalculate" Content="Calculate"  Grid.Row="4" Grid.ColumnSpan="2" Width="100" Height="50"/>
+        <Button Name="btnCalculate" Content="Calculate"  Grid.Row="4" Grid.ColumnSpan="2" 
+                Width="100" Height="50" Click="btn_Calculate_Click"/>
 
-        <ListBox Grid.Column="2" Grid.RowSpan ="5" Margin="16" BorderBrush="Blue" />
+        <ListBox Name="ListBoxResults" Grid.Column="2" Grid.RowSpan ="5" Margin="16" BorderBrush="Blue" ItemsSource="{Binding}" />
 
     </Grid>
 

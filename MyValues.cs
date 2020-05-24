@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Laba3_ListBox
 {
@@ -13,19 +19,31 @@ namespace Laba3_ListBox
         public double step;
         public double n;
 
+        public MyValues()
+        {
+            XStart = 0;
+            xStop = 0;
+            Step = 1;
+            N = 1;
+
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName]string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
         public double XStart
         {
             get { return xStart; }
             set
             {
-                if (value < 5)
-                {
-                    throw new ArgumentException("Значение должно быть больше 5");
-                }
-                else
-                {
-                    xStart = value;
-                }
+
+                xStart = value;
+                OnPropertyChanged("XStart");
+
             }
         }
 
@@ -34,14 +52,9 @@ namespace Laba3_ListBox
             get { return xStop; }
             set
             {
-                if (value < 5)
-                {
-                    throw new ArgumentException("Значение должно быть больше 5");
-                }
-                else
-                {
-                    xStop = value;
-                }
+                xStop = value;
+                OnPropertyChanged("XStop");
+
             }
         }
         public double Step
@@ -49,14 +62,9 @@ namespace Laba3_ListBox
             get { return step; }
             set
             {
-                if (value ==0)
-                {
-                    throw new ArgumentException("Значение должно быть больше 5");
-                }
-                else
-                {
-                    step = value;
-                }
+                step = value;
+                OnPropertyChanged("step");
+
             }
         }
         public double N
@@ -64,16 +72,48 @@ namespace Laba3_ListBox
             get { return n; }
             set
             {
-                if (value ==0)
-                {
-                    throw new ArgumentException("Значение должно быть больше 5");
-                }
-                else
-                {
-                    n = value;
-                }
+                n = value;
+                OnPropertyChanged("N");
             }
         }
 
+        public void getResults(ObservableCollection<string> results)
+        {
+            double currentX = xStart;
+            StringBuilder allResultString = new StringBuilder();
+            double Yresult;
+            while (currentX <= xStop)
+            {
+                int k = 0;
+                double sum = 0;
+                while (k <= N)
+                {
+                    sum += Math.Pow(currentX, 2 * k) * (2 * k + 1) / calculateFactorial(k);
+                    k += 1;
+                }
+                allResultString.Append($"S({currentX}) = {sum}")
+                    .Append("; ");
+
+
+                Yresult = (1 + 2 * Math.Pow(currentX, 2)) * Math.Exp(Math.Pow(currentX, 2));
+                allResultString.Append($"Y({currentX}) = {Yresult}");
+
+                results.Add(allResultString.ToString());
+                allResultString.Clear();
+                currentX += step;
+            }
+        }
+
+        private double calculateFactorial(int maxNumber)
+        {
+            double result = 1;
+            while (maxNumber != 1 && maxNumber != 0)
+                while (maxNumber != 1 && maxNumber != 0)
+                {
+                    result = result * maxNumber;
+                    maxNumber--;
+                }
+            return result;
+        }
     }
 }
